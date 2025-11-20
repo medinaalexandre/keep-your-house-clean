@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
+	"strings"
 	"syscall"
 
 	"github.com/go-chi/chi/v5"
@@ -76,6 +78,27 @@ func main() {
 		tenantHandlerInstance.RegisterRoutes(r)
 		userHandlerInstance.RegisterRoutes(r)
 		taskHandlerInstance.RegisterRoutes(r)
+	})
+
+	fileServer := http.FileServer(http.Dir("./web/dist"))
+	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+		path := r.URL.Path
+
+		if strings.HasPrefix(path, "/api") ||
+			strings.HasPrefix(path, "/auth") ||
+			strings.HasPrefix(path, "/tasks") ||
+			strings.HasPrefix(path, "/users") ||
+			strings.HasPrefix(path, "/tenants") {
+			http.NotFound(w, r)
+			return
+		}
+
+		if path == "/" || !strings.Contains(filepath.Base(path), ".") {
+			path = "/index.html"
+		}
+
+		r.URL.Path = path
+		fileServer.ServeHTTP(w, r)
 	})
 
 	port := getEnv("PORT", "8080")

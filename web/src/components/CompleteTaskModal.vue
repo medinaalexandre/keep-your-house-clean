@@ -30,7 +30,8 @@ watch(() => props.isOpen, async (isOpen) => {
     if (currentUser) {
       selectedUserId.value = currentUser.id;
     } else {
-      selectedUserId.value = users.value.length > 0 ? users.value[0].id : null;
+      const firstUser = users.value.length > 0 ? users.value[0] : null;
+      selectedUserId.value = firstUser?.id ?? null;
     }
   } else {
     selectedUserId.value = null;

@@ -5,7 +5,7 @@ import { createTask, type CreateTaskRequest } from '../services/tasks';
 
 const { t } = useI18n();
 
-const props = defineProps<{
+defineProps<{
   isOpen: boolean;
 }>();
 

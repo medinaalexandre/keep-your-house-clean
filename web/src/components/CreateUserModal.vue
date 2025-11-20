@@ -5,7 +5,7 @@ import { createUser, getCurrentUser, type CreateUserRequest } from '../services/
 
 const { t } = useI18n();
 
-const props = defineProps<{
+defineProps<{
   isOpen: boolean;
 }>();
 

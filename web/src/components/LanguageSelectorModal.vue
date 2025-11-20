@@ -4,7 +4,7 @@ import { availableLocales } from '../i18n';
 
 const { locale, t } = useI18n();
 
-const props = defineProps<{
+defineProps<{
   isOpen: boolean;
 }>();
 

@@ -28,9 +28,12 @@ func NewPostgresDB(cfg Config) (*sql.DB, error) {
 		dsn = supabaseURL
 	} else {
 		dsn = fmt.Sprintf(
-			"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
+			"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s connect_timeout=10",
 			cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.SSLMode,
 		)
+		if strings.Contains(cfg.Host, "supabase.co") || strings.Contains(cfg.Host, "supabase.com") {
+			dsn += " fallback_application_name=keep-your-house-clean"
+		}
 	}
 
 	db, err := sql.Open("postgres", dsn)
@@ -52,7 +55,7 @@ func NewPostgresDBFromConfig() (*sql.DB, error) {
 	user := getEnv("DB_USER", getEnv("SUPABASE_DB_USER", "postgres"))
 	password := getEnv("DB_PASSWORD", getEnv("SUPABASE_DB_PASSWORD", "postgres"))
 	dbName := getEnv("DB_NAME", getEnv("SUPABASE_DB_NAME", "postgres"))
-	sslMode := getEnv("DB_SSLMODE", getEnv("SUPABASE_DB_SSLMODE", "require"))
+	sslMode := getEnv("DB_SSLMODE", getEnv("SUPABASE_DB_SSLMODE", ""))
 
 	if sslMode == "" {
 		if strings.Contains(host, "supabase.co") || strings.Contains(host, "supabase.com") {
