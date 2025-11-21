@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="houseGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563EB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1D4ED8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="broomGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2563EB;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="64" height="64" fill="#0F172A" rx="8"/>
+  
+  <g transform="translate(32, 32)">
+    <path d="M -12 -8 L 0 -18 L 12 -8 L 12 8 L -12 8 Z" fill="url(#houseGradient)" stroke="#1E293B" stroke-width="1.5"/>
+    <rect x="-8" y="0" width="4" height="8" fill="#60A5FA" stroke="#1E293B" stroke-width="1"/>
+    <rect x="4" y="0" width="4" height="8" fill="#60A5FA" stroke="#1E293B" stroke-width="1"/>
+    <rect x="-2" y="2" width="4" height="6" fill="#60A5FA" stroke="#1E293B" stroke-width="1"/>
+    
+    <g transform="translate(16, 4) rotate(45)">
+      <rect x="-1" y="-8" width="2" height="12" fill="url(#broomGradient)" stroke="#1E293B" stroke-width="1"/>
+      <path d="M -1 -8 L -4 -10 L -1 -12 L 1 -12 L 4 -10 L 1 -8 Z" fill="#60A5FA" stroke="#1E293B" stroke-width="1"/>
+    </g>
+    
+    <circle cx="0" cy="-14" r="2" fill="#60A5FA" stroke="#1E293B" stroke-width="1"/>
+  </g>
+</svg>
+
