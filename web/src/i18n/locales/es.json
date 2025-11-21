@@ -79,7 +79,7 @@
     "password": "Contraseña",
     "enter": "Entrar",
     "entering": "Entrando...",
-    "emailPlaceholder": "tu@email.com",
+    "emailPlaceholder": "tu[at]email.com",
     "passwordPlaceholder": "Tu contraseña",
     "requiredFields": "Correo electrónico y contraseña son obligatorios",
     "register": "Crear cuenta",
@@ -98,7 +98,7 @@
     "tenantNamePlaceholder": "Ej: Mi Empresa",
     "tenantDomainPlaceholder": "Ej: miempresa",
     "userNamePlaceholder": "Tu nombre completo",
-    "emailPlaceholder": "tu@email.com",
+    "emailPlaceholder": "tu[at]email.com",
     "passwordPlaceholder": "Mínimo 6 caracteres",
     "requiredFields": "Todos los campos son obligatorios"
   },
