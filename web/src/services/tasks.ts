@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config/api';
+
 export interface Task {
   id: number;
   title: string;
@@ -32,8 +34,6 @@ export interface CreateTaskRequest {
   frequency_value: number;
   frequency_unit: 'days' | 'weeks' | 'months';
 }
-
-const API_BASE_URL = 'http://localhost:8080';
 
 const getAuthToken = (): string | null => {
   return localStorage.getItem('token');

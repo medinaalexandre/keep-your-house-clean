@@ -1,4 +1,5 @@
 import { translateError } from '../utils/errorTranslator';
+import { API_BASE_URL } from '../config/api';
 
 export interface LoginRequest {
   email: string;
@@ -22,7 +23,7 @@ export interface LoginResponse {
 }
 
 export const login = async (req: LoginRequest): Promise<LoginResponse> => {
-  const response = await fetch('http://localhost:8080/auth/login', {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -48,7 +49,7 @@ export const login = async (req: LoginRequest): Promise<LoginResponse> => {
 };
 
 export const register = async (req: RegisterRequest): Promise<LoginResponse> => {
-  const response = await fetch('http://localhost:8080/auth/register', {
+  const response = await fetch(`${API_BASE_URL}/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -1,3 +1,5 @@
+import { API_BASE_URL } from '../config/api';
+
 export interface User {
   id: number;
   name: string;
@@ -11,8 +13,6 @@ export interface User {
   updated_at: string;
   deleted_at: string | null;
 }
-
-const API_BASE_URL = 'http://localhost:8080';
 
 const getAuthToken = (): string | null => {
   return localStorage.getItem('token');

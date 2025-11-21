@@ -97,33 +97,6 @@ make down        # Produção
 make dev-down    # Desenvolvimento
 ```
 
-## Variáveis de Ambiente
-
-### Opção 1: DATABASE_URL (Recomendado para Render)
-
-O Render fornece automaticamente `DATABASE_URL` quando você cria um PostgreSQL Database. Use esta variável:
-
-```
-DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
-```
-
-### Opção 2: Variáveis Individuais (Para testes locais)
-
-Se preferir usar variáveis individuais:
-
-- `DB_HOST`: Host do banco de dados (padrão: localhost)
-- `DB_USER`: Usuário do banco (padrão: postgres)
-- `DB_PASSWORD`: Senha do banco (padrão: postgres)
-- `DB_NAME`: Nome do banco (padrão: keep_your_house_clean)
-- `DB_SSLMODE`: Modo SSL (padrão: disable, use `require` para Render)
-
-### Outras Variáveis
-
-- `JWT_SECRET`: Chave secreta para JWT (obrigatório em produção)
-- `PORT`: Porta da API (padrão: 8080)
-
-**Nota**: Se `DATABASE_URL` estiver definida, ela será usada. Caso contrário, usa as variáveis individuais.
-
 ## Endpoints da API
 
 ### Autenticação
