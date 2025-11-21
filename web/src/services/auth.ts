@@ -23,7 +23,7 @@ export interface LoginResponse {
 }
 
 export const login = async (req: LoginRequest): Promise<LoginResponse> => {
-  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export const login = async (req: LoginRequest): Promise<LoginResponse> => {
 };
 
 export const register = async (req: RegisterRequest): Promise<LoginResponse> => {
-  const response = await fetch(`${API_BASE_URL}/auth/register`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/auth/register`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -30,12 +30,15 @@ const error = ref('');
 
 watch(() => props.task, (newTask) => {
   if (newTask) {
+    const scheduledToDate: string | null = newTask.scheduled_to 
+      ? (newTask.scheduled_to.split('T')[0] || null)
+      : null;
     formData.value = {
       title: newTask.title,
       description: newTask.description,
       points: newTask.points,
       status: newTask.status,
-      scheduled_to: newTask.scheduled_to ? newTask.scheduled_to.split('T')[0] : null,
+      scheduled_to: scheduledToDate,
       frequency_value: newTask.frequency_value,
       frequency_unit: newTask.frequency_unit as 'days' | 'weeks' | 'months',
     };
@@ -44,12 +47,15 @@ watch(() => props.task, (newTask) => {
 
 const resetForm = () => {
   if (props.task) {
+    const scheduledToDate: string | null = props.task.scheduled_to 
+      ? (props.task.scheduled_to.split('T')[0] || null)
+      : null;
     formData.value = {
       title: props.task.title,
       description: props.task.description,
       points: props.task.points,
       status: props.task.status,
-      scheduled_to: props.task.scheduled_to ? props.task.scheduled_to.split('T')[0] : null,
+      scheduled_to: scheduledToDate,
       frequency_value: props.task.frequency_value,
       frequency_unit: props.task.frequency_unit as 'days' | 'weeks' | 'months',
     };

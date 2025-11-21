@@ -27,7 +27,7 @@ const getHeaders = (): HeadersInit => {
 };
 
 export const getUsers = async (): Promise<User[]> => {
-  const response = await fetch(`${API_BASE_URL}/users`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/users`, {
     method: 'GET',
     headers: getHeaders(),
   });
@@ -41,7 +41,7 @@ export const getUsers = async (): Promise<User[]> => {
 };
 
 export const getTopUsers = async (): Promise<User[]> => {
-  const response = await fetch(`${API_BASE_URL}/users/ranking`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/users/ranking`, {
     method: 'GET',
     headers: getHeaders(),
   });
@@ -79,7 +79,7 @@ export interface CreateUserRequest {
 }
 
 export const createUser = async (req: CreateUserRequest): Promise<User> => {
-  const response = await fetch(`${API_BASE_URL}/users`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/users`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify({

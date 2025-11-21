@@ -63,7 +63,7 @@ export const getUpcomingTasks = async (limit: number = 5, offset: number = 0): P
     offset: offset.toString(),
   });
 
-  const response = await fetch(`${API_BASE_URL}/tasks/upcoming?${params}`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks/upcoming?${params}`, {
     method: 'GET',
     headers: getHeaders(),
   });
@@ -81,7 +81,7 @@ export const getCompletedTasksHistory = async (limit: number = 5): Promise<TaskW
     limit: limit.toString(),
   });
 
-  const response = await fetch(`${API_BASE_URL}/tasks/history?${params}`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks/history?${params}`, {
     method: 'GET',
     headers: getHeaders(),
   });
@@ -95,7 +95,7 @@ export const getCompletedTasksHistory = async (limit: number = 5): Promise<TaskW
 };
 
 export const createTask = async (req: CreateTaskRequest): Promise<Task> => {
-  const response = await fetch(`${API_BASE_URL}/tasks`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(req),
@@ -115,7 +115,7 @@ export const completeTask = async (taskId: number, completedById?: number): Prom
     body.completed_by_id = completedById;
   }
   
-  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/complete`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}/complete`, {
     method: 'POST',
     headers: getHeaders(),
     body: JSON.stringify(body),
@@ -130,7 +130,7 @@ export const completeTask = async (taskId: number, completedById?: number): Prom
 };
 
 export const undoCompleteTask = async (taskId: number): Promise<Task> => {
-  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}/undo`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}/undo`, {
     method: 'POST',
     headers: getHeaders(),
   });
@@ -144,7 +144,7 @@ export const undoCompleteTask = async (taskId: number): Promise<Task> => {
 };
 
 export const updateTask = async (taskId: number, req: UpdateTaskRequest): Promise<Task> => {
-  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}`, {
     method: 'PUT',
     headers: getHeaders(),
     body: JSON.stringify(req),
@@ -159,7 +159,7 @@ export const updateTask = async (taskId: number, req: UpdateTaskRequest): Promis
 };
 
 export const deleteTask = async (taskId: number): Promise<void> => {
-  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks/${taskId}`, {
     method: 'DELETE',
     headers: getHeaders(),
   });

@@ -17,7 +17,7 @@ func NewHandler(service *Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r chi.Router) {
-	r.Route("/tenants", func(r chi.Router) {
+	r.Route("/api/v1/tenants", func(r chi.Router) {
 		r.Get("/", h.ListTenants)
 		r.Get("/{id}", h.GetTenant)
 		r.Get("/domain/{domain}", h.GetTenantByDomain)

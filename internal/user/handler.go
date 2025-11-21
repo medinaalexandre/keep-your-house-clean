@@ -18,7 +18,7 @@ func NewHandler(service *Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r chi.Router) {
-	r.Route("/users", func(r chi.Router) {
+	r.Route("/api/v1/users", func(r chi.Router) {
 		r.Get("/", h.ListUsers)
 		r.Get("/ranking", h.GetTopUsers)
 		r.Get("/{id}", h.GetUser)

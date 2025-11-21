@@ -16,8 +16,8 @@ func NewHandler(service *Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r chi.Router) {
-	r.Post("/auth/login", h.Login)
-	r.Post("/auth/register", h.Register)
+	r.Post("/api/v1/auth/login", h.Login)
+	r.Post("/api/v1/auth/register", h.Register)
 }
 
 func (h *Handler) Login(w http.ResponseWriter, r *http.Request) {

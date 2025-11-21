@@ -91,11 +91,7 @@ func main() {
 	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
 		path := req.URL.Path
 
-		if strings.HasPrefix(path, "/api") ||
-			strings.HasPrefix(path, "/auth") ||
-			strings.HasPrefix(path, "/tasks") ||
-			strings.HasPrefix(path, "/users") ||
-			strings.HasPrefix(path, "/tenants") {
+		if strings.HasPrefix(path, "/api") {
 			http.NotFound(w, req)
 			return
 		}

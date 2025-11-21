@@ -18,7 +18,7 @@ func NewHandler(service *Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r chi.Router) {
-	r.Route("/tasks", func(r chi.Router) {
+	r.Route("/api/v1/tasks", func(r chi.Router) {
 		r.Get("/", h.ListTasks)
 		r.Get("/upcoming", h.GetUpcomingTasks)
 		r.Get("/history", h.GetCompletedTasksHistory)
