@@ -35,6 +35,16 @@ export interface CreateTaskRequest {
   frequency_unit: 'days' | 'weeks' | 'months';
 }
 
+export interface UpdateTaskRequest {
+  title: string;
+  description: string;
+  points: number;
+  status: string;
+  scheduled_to: string | null;
+  frequency_value: number;
+  frequency_unit: 'days' | 'weeks' | 'months';
+}
+
 const getAuthToken = (): string | null => {
   return localStorage.getItem('token');
 };
@@ -131,4 +141,31 @@ export const undoCompleteTask = async (taskId: number): Promise<Task> => {
   }
 
   return response.json();
+};
+
+export const updateTask = async (taskId: number, req: UpdateTaskRequest): Promise<Task> => {
+  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify(req),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(errorData.error || 'Failed to update task');
+  }
+
+  return response.json();
+};
+
+export const deleteTask = async (taskId: number): Promise<void> => {
+  const response = await fetch(`${API_BASE_URL}/tasks/${taskId}`, {
+    method: 'DELETE',
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(errorData.error || 'Failed to delete task');
+  }
 };

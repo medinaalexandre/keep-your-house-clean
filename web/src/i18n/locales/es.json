@@ -12,6 +12,10 @@
     "loadingMore": "Cargando más...",
     "undo": "Deshacer",
     "undoing": "Deshaciendo...",
+    "delete": "Eliminar",
+    "deleting": "Eliminando...",
+    "edit": "Editar",
+    "confirmDelete": "¿Estás seguro de que deseas eliminar esta tarea?",
     "createTask": "Crear Tarea",
     "createFirstTask": "Crea la primera tarea aquí",
     "createUser": "Crear Usuario",
@@ -25,6 +29,7 @@
   },
   "task": {
     "title": "Nueva Tarea",
+    "editTitle": "Editar Tarea",
     "titleLabel": "Título",
     "descriptionLabel": "Descripción",
     "pointsLabel": "Puntos",
@@ -42,8 +47,12 @@
     "months": "Meses",
     "create": "Crear Tarea",
     "creating": "Creando...",
+    "update": "Actualizar Tarea",
+    "updating": "Actualizando...",
     "cancel": "Cancelar",
-    "titleRequired": "Título y descripción son obligatorios"
+    "titleRequired": "Título y descripción son obligatorios",
+    "taskNotFound": "Tarea no encontrada",
+    "cannotEditCompleted": "No se pueden editar tareas ya completadas"
   },
   "user": {
     "title": "Nuevo Usuario",

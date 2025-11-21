@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import { useRouter } from 'vue-router';
 import { login, register } from '../services/auth';
+
+const router = useRouter();
 
 const { t } = useI18n();
 
@@ -29,7 +32,7 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value
     });
-    window.location.reload();
+    router.push({ name: 'Dashboard' });
   } catch (e: any) {
     error.value = e.message;
   } finally {
@@ -53,7 +56,7 @@ const handleRegister = async () => {
       email: email.value,
       password: password.value
     });
-    window.location.reload();
+    router.push({ name: 'Dashboard' });
   } catch (e: any) {
     error.value = e.message;
   } finally {

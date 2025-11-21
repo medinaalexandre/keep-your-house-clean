@@ -82,6 +82,5 @@ export const logout = () => {
   localStorage.removeItem('user_id');
   localStorage.removeItem('user_name');
   localStorage.removeItem('tenant_id');
-  window.location.href = '/';
 };
 

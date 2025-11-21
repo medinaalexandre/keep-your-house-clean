@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { getUpcomingTasks, getCompletedTasksHistory, undoCompleteTask, type Task, type TaskWithUser } from '../services/tasks';
+import { useRouter } from 'vue-router';
+import { getUpcomingTasks, getCompletedTasksHistory, undoCompleteTask, deleteTask, type Task, type TaskWithUser } from '../services/tasks';
 import { getTopUsers, type User } from '../services/users';
 import { logout } from '../services/auth';
 import CreateTaskModal from './CreateTaskModal.vue';
 import CreateUserModal from './CreateUserModal.vue';
 import CompleteTaskModal from './CompleteTaskModal.vue';
+import EditTaskModal from './EditTaskModal.vue';
 import LanguageSelectorModal from './LanguageSelectorModal.vue';
 
 const { t, locale } = useI18n();
+const router = useRouter();
 
 const upcomingTasks = ref<Task[]>([]);
 const completedTasks = ref<TaskWithUser[]>([]);
@@ -28,7 +31,9 @@ const errorRanking = ref('');
 const isTaskModalOpen = ref(false);
 const isUserModalOpen = ref(false);
 const isCompleteModalOpen = ref(false);
+const isEditModalOpen = ref(false);
 const selectedTaskForComplete = ref<Task | null>(null);
+const selectedTaskForEdit = ref<Task | null>(null);
 const hasMoreTasks = ref(true);
 const upcomingTasksContainer = ref<HTMLElement | null>(null);
 const showFloatingMenu = ref(false);
@@ -145,6 +150,17 @@ const handleCompleteClick = (task: Task) => {
   isCompleteModalOpen.value = true;
 };
 
+const handleEditClick = (task: Task) => {
+  selectedTaskForEdit.value = task;
+  isEditModalOpen.value = true;
+};
+
+const handleTaskUpdated = () => {
+  loadUpcomingTasks(true);
+  loadCompletedTasksHistory();
+  loadTopUsers();
+};
+
 const handleTaskCompleted = () => {
   loadUpcomingTasks(true);
   loadCompletedTasksHistory();
@@ -167,6 +183,26 @@ const handleUndoTask = async (taskId: number) => {
   }
 };
 
+const deletingTaskId = ref<number | null>(null);
+
+const handleDeleteTask = async (taskId: number) => {
+  if (!confirm(t('dashboard.confirmDelete'))) {
+    return;
+  }
+
+  deletingTaskId.value = taskId;
+  try {
+    await deleteTask(taskId);
+    loadUpcomingTasks(true);
+    loadCompletedTasksHistory();
+    loadTopUsers();
+  } catch (e: any) {
+    errorUpcoming.value = e.message;
+  } finally {
+    deletingTaskId.value = null;
+  }
+};
+
 const handleMenuMouseLeave = () => {
   setTimeout(() => {
     const menuContainer = document.querySelector('.floating-menu-container');
@@ -174,6 +210,11 @@ const handleMenuMouseLeave = () => {
       showFloatingMenu.value = false;
     }
   }, 200);
+};
+
+const handleLogout = () => {
+  logout();
+  router.push({ name: 'Login' });
 };
 
 onMounted(async () => {
@@ -234,7 +275,7 @@ onUnmounted(() => {
                 <span>{{ t('settings.changeLanguage') }}</span>
               </button>
               <button
-                @click.stop="logout(); showSettingsMenu = false"
+                @click.stop="handleLogout(); showSettingsMenu = false"
                 class="cursor-pointer flex w-full items-center gap-3 whitespace-nowrap rounded-md px-4 py-2 text-left text-red-400 transition-colors duration-200 hover:bg-slate-700/50"
               >
                 <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -327,6 +368,45 @@ onUnmounted(() => {
                       <span>{{ formatDate(task.scheduled_to) }}</span>
                       <span>{{ task.points }} pontos</span>
                     </div>
+                  </div>
+                  <div v-if="!task.completed" class="relative z-10 ml-4 flex flex-shrink-0 gap-2 md:opacity-0 md:group-hover:opacity-100">
+                    <button
+                      @click.stop="handleEditClick(task)"
+                      class="cursor-pointer rounded-md border border-blue-600 bg-blue-600/10 p-2 text-blue-400 transition-all duration-200 hover:bg-blue-600/20"
+                      :title="t('dashboard.edit')"
+                    >
+                      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
+                      @click.stop="handleDeleteTask(task.id)"
+                      :disabled="deletingTaskId === task.id"
+                      class="cursor-pointer rounded-md border border-red-600 bg-red-600/10 p-2 text-red-400 transition-all duration-200 hover:bg-red-600/20 disabled:cursor-not-allowed disabled:opacity-50"
+                      :title="deletingTaskId === task.id ? t('dashboard.deleting') : t('dashboard.delete')"
+                    >
+                      <svg v-if="deletingTaskId !== task.id" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      <svg v-else class="h-5 w-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
+                  </div>
+                  <div v-else class="relative z-10 ml-4 flex flex-shrink-0 md:opacity-0 md:group-hover:opacity-100">
+                    <button
+                      @click.stop="handleDeleteTask(task.id)"
+                      :disabled="deletingTaskId === task.id"
+                      class="cursor-pointer rounded-md border border-red-600 bg-red-600/10 p-2 text-red-400 transition-all duration-200 hover:bg-red-600/20 disabled:cursor-not-allowed disabled:opacity-50"
+                      :title="deletingTaskId === task.id ? t('dashboard.deleting') : t('dashboard.delete')"
+                    >
+                      <svg v-if="deletingTaskId !== task.id" class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                      <svg v-else class="h-5 w-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </button>
                   </div>
                 </div>
                 
@@ -475,6 +555,13 @@ onUnmounted(() => {
       :task="selectedTaskForComplete"
       @close="isCompleteModalOpen = false; selectedTaskForComplete = null"
       @completed="handleTaskCompleted"
+    />
+    
+    <EditTaskModal
+      :is-open="isEditModalOpen"
+      :task="selectedTaskForEdit"
+      @close="isEditModalOpen = false; selectedTaskForEdit = null"
+      @updated="handleTaskUpdated"
     />
     
     <LanguageSelectorModal
