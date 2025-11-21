@@ -14,7 +14,16 @@ import (
 )
 
 func main() {
-	db, err := database.NewPostgresDBFromConfig()
+	dbConfig := database.Config{
+		Host:     getEnv("DB_HOST", "localhost"),
+		Port:     5432,
+		User:     getEnv("DB_USER", "postgres"),
+		Password: getEnv("DB_PASSWORD", "postgres"),
+		DBName:   getEnv("DB_NAME", "keep_your_house_clean"),
+		SSLMode:  getEnv("DB_SSLMODE", "disable"),
+	}
+
+	db, err := database.NewPostgresDB(dbConfig)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}

@@ -24,7 +24,14 @@ import (
 )
 
 func main() {
-	db, err := database.NewPostgresDBFromConfig()
+	db, err := database.NewPostgresDB(database.Config{
+		Host:     getEnv("DB_HOST", "localhost"),
+		Port:     5432,
+		User:     getEnv("DB_USER", "postgres"),
+		Password: getEnv("DB_PASSWORD", "postgres"),
+		DBName:   getEnv("DB_NAME", "keep_your_house_clean"),
+		SSLMode:  getEnv("DB_SSLMODE", "disable"),
+	})
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
@@ -81,7 +88,7 @@ func main() {
 	})
 
 	fileServer := http.FileServer(http.Dir("./web/dist"))
-	r.Get("/*", func(w http.ResponseWriter, r *http.Request) {
+	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
 
 		if strings.HasPrefix(path, "/api") ||
@@ -99,7 +106,7 @@ func main() {
 
 		r.URL.Path = path
 		fileServer.ServeHTTP(w, r)
-	})
+	}))
 
 	port := getEnv("PORT", "8080")
 	log.Printf("Server starting on port %s", port)

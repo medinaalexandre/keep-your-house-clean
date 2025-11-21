@@ -99,34 +99,30 @@ make dev-down    # Desenvolvimento
 
 ## Variáveis de Ambiente
 
-### Opção 1: Connection String (Recomendado para Supabase)
+### Opção 1: DATABASE_URL (Recomendado para Render)
 
-- `DATABASE_URL`: Connection string completa do PostgreSQL
-  - Exemplo: `postgresql://postgres:[PASSWORD]@db.[PROJECT_REF].supabase.co:5432/postgres`
+O Render fornece automaticamente `DATABASE_URL` quando você cria um PostgreSQL Database. Use esta variável:
 
-### Opção 2: Variáveis Individuais do Supabase
+```
+DATABASE_URL=postgresql://user:password@host:5432/dbname?sslmode=require
+```
 
-- `SUPABASE_DB_HOST`: Host do Supabase (ex: `db.xxxxx.supabase.co`)
-- `SUPABASE_DB_PORT`: Porta (padrão: `5432`)
-- `SUPABASE_DB_USER`: Usuário (padrão: `postgres`)
-- `SUPABASE_DB_PASSWORD`: Senha do banco
-- `SUPABASE_DB_NAME`: Nome do banco (padrão: `postgres`)
-- `SUPABASE_DB_SSLMODE`: Modo SSL (padrão: `require`)
+### Opção 2: Variáveis Individuais (Para testes locais)
 
-### Opção 3: Variáveis Tradicionais (Compatibilidade)
+Se preferir usar variáveis individuais:
 
 - `DB_HOST`: Host do banco de dados (padrão: localhost)
 - `DB_USER`: Usuário do banco (padrão: postgres)
 - `DB_PASSWORD`: Senha do banco (padrão: postgres)
 - `DB_NAME`: Nome do banco (padrão: keep_your_house_clean)
-- `DB_SSLMODE`: Modo SSL (padrão: disable)
+- `DB_SSLMODE`: Modo SSL (padrão: disable, use `require` para Render)
 
 ### Outras Variáveis
 
 - `JWT_SECRET`: Chave secreta para JWT (obrigatório em produção)
 - `PORT`: Porta da API (padrão: 8080)
 
-**Nota**: O código detecta automaticamente qual método usar. Prioridade: `DATABASE_URL` > `SUPABASE_DB_*` > `DB_*`
+**Nota**: Se `DATABASE_URL` estiver definida, ela será usada. Caso contrário, usa as variáveis individuais.
 
 ## Endpoints da API
 
@@ -144,19 +140,7 @@ Todas as rotas requerem autenticação via JWT Bearer token no header `Authoriza
 
 ## Banco de Dados
 
-### Desenvolvimento Local
-
 O PostgreSQL é inicializado automaticamente com Docker Compose. As migrações em `migrations/` são executadas automaticamente. O banco de dados está disponível na porta `5432`.
-
-### Produção com Supabase
-
-O projeto suporta Supabase como banco de dados PostgreSQL. Veja o guia completo em [SUPABASE_SETUP.md](./SUPABASE_SETUP.md).
-
-**Configuração rápida:**
-1. Crie um projeto no Supabase (https://supabase.com)
-2. Configure a variável `DATABASE_URL` com a connection string
-3. Execute as migrações via SQL Editor do Supabase
-4. Pronto! A API se conecta automaticamente ao Supabase
 
 ## Desenvolvimento
 
