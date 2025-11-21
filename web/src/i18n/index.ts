@@ -9,6 +9,10 @@ export const i18n = createI18n({
   legacy: false,
   locale: savedLocale,
   fallbackLocale: 'pt-BR',
+  warnHtmlMessage: false,
+  escapeParameter: true,
+  missingWarn: false,
+  fallbackWarn: false,
   messages: {
     'pt-BR': ptBR,
     'es': es,

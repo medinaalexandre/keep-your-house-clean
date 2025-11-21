@@ -88,24 +88,31 @@ func main() {
 	})
 
 	fileServer := http.FileServer(http.Dir("./web/dist"))
-	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		path := r.URL.Path
+	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		path := req.URL.Path
 
 		if strings.HasPrefix(path, "/api") ||
 			strings.HasPrefix(path, "/auth") ||
 			strings.HasPrefix(path, "/tasks") ||
 			strings.HasPrefix(path, "/users") ||
 			strings.HasPrefix(path, "/tenants") {
-			http.NotFound(w, r)
+			http.NotFound(w, req)
 			return
 		}
 
 		if path == "/" || !strings.Contains(filepath.Base(path), ".") {
-			path = "/index.html"
+			http.ServeFile(w, req, "./web/dist/index.html")
+			return
 		}
 
-		r.URL.Path = path
-		fileServer.ServeHTTP(w, r)
+		fullPath := filepath.Join("./web/dist", path)
+		if _, err := os.Stat(fullPath); os.IsNotExist(err) {
+			http.ServeFile(w, req, "./web/dist/index.html")
+			return
+		}
+
+		req.URL.Path = path
+		fileServer.ServeHTTP(w, req)
 	}))
 
 	port := getEnv("PORT", "8080")

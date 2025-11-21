@@ -381,11 +381,11 @@ onUnmounted(() => {
                   <h3 class="font-medium text-slate-100">{{ task.title }}</h3>
                   <p class="mt-1 text-sm text-slate-400">{{ task.description }}</p>
                   <div class="mt-2 flex items-center gap-4 text-xs text-slate-500">
-                    <span>{{ t('dashboard.completedOn') }}: {{ formatDate(task.updated_at) }}</span>
+                    <span>{{ t('dashboard.completedOn') + ': ' + formatDate(task.updated_at) }}</span>
                     <span v-if="task.completed_by_name" class="text-slate-300">
-                      {{ t('dashboard.completedBy') }} {{ task.completed_by_name }}
+                      {{ t('dashboard.completedBy') + ' ' + task.completed_by_name }}
                     </span>
-                    <span v-else class="text-slate-500">{{ t('dashboard.completedBy') }} {{ t('dashboard.unknownUser') }}</span>
+                    <span v-else class="text-slate-500">{{ t('dashboard.completedBy') + ' ' + t('dashboard.unknownUser') }}</span>
                   </div>
                 </div>
                 <button
