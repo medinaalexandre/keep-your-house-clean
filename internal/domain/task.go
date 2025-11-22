@@ -81,5 +81,6 @@ type TaskRepository interface {
 	Delete(ctx context.Context, id int64, tenantID int64) error
 	GetUpcomingTasks(ctx context.Context, tenantID int64, limit int, offset int) ([]Task, error)
 	GetCompletedTasksHistory(ctx context.Context, tenantID int64, limit int) ([]TaskWithUser, error)
+	GetCompletedTasksByUser(ctx context.Context, userID int64, tenantID int64, limit int, offset int) ([]TaskWithUser, error)
 	FindTaskCreatedAfterCompletion(ctx context.Context, originalTask *Task, completionTime time.Time) (*Task, error)
 }

@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Login from '../components/Login.vue';
 import Dashboard from '../components/Dashboard.vue';
 import ComplimentsHistory from '../components/ComplimentsHistory.vue';
+import UserTasksHistory from '../components/UserTasksHistory.vue';
 
 const routes = [
   {
@@ -20,6 +21,12 @@ const routes = [
     path: '/compliments-history',
     name: 'ComplimentsHistory',
     component: ComplimentsHistory,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/user/:userId/tasks',
+    name: 'UserTasksHistory',
+    component: UserTasksHistory,
     meta: { requiresAuth: true }
   }
 ];

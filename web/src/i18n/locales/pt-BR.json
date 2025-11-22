@@ -28,7 +28,26 @@
     "changeLanguage": "Trocar Linguagem",
     "selectLanguage": "Selecione seu idioma preferido",
     "complimentsHistory": "Histórico de elogios",
+    "editProfile": "Editar perfil",
     "logout": "Sair"
+  },
+  "profile": {
+    "title": "Editar Perfil",
+    "emailLabel": "E-mail",
+    "nameLabel": "Nome",
+    "namePlaceholder": "Seu nome",
+    "passwordLabel": "Nova Senha",
+    "passwordPlaceholder": "Deixe em branco para não alterar",
+    "passwordHint": "Deixe em branco se não deseja alterar a senha",
+    "confirmPasswordLabel": "Confirme a Nova Senha",
+    "confirmPasswordPlaceholder": "Digite novamente a nova senha",
+    "update": "Atualizar",
+    "updating": "Atualizando...",
+    "cancel": "Cancelar",
+    "loading": "Carregando...",
+    "nameRequired": "Nome é obrigatório",
+    "passwordsDoNotMatch": "As senhas não coincidem",
+    "userNotFound": "Usuário não encontrado"
   },
   "task": {
     "title": "Nova Tarefa",
@@ -140,6 +159,12 @@
     "sent": "Enviado",
     "from": "De",
     "to": "Para"
+  },
+  "userTasksHistory": {
+    "title": "Histórico de Tarefas",
+    "subtitle": "Tarefas completadas por {name}",
+    "backToDashboard": "Voltar ao Dashboard",
+    "noTasks": "Nenhuma tarefa completada ainda"
   },
   "unviewedCompliments": {
     "title": "Parabéns! Você recebeu {count} elogio(s)",

@@ -94,6 +94,25 @@ export const getCompletedTasksHistory = async (limit: number = 5): Promise<TaskW
   return response.json();
 };
 
+export const getCompletedTasksByUser = async (userId: number, limit: number = 20, offset: number = 0): Promise<TaskWithUser[]> => {
+  const params = new URLSearchParams({
+    limit: limit.toString(),
+    offset: offset.toString(),
+  });
+
+  const response = await fetch(`${API_BASE_URL}/api/v1/tasks/user/${userId}/completed?${params}`, {
+    method: 'GET',
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(errorData.error || 'Failed to fetch completed tasks by user');
+  }
+
+  return response.json();
+};
+
 export const createTask = async (req: CreateTaskRequest): Promise<Task> => {
   const response = await fetch(`${API_BASE_URL}/api/v1/tasks`, {
     method: 'POST',

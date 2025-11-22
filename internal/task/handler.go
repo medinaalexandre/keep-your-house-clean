@@ -22,6 +22,7 @@ func (h *Handler) RegisterRoutes(r chi.Router) {
 		r.Get("/", h.ListTasks)
 		r.Get("/upcoming", h.GetUpcomingTasks)
 		r.Get("/history", h.GetCompletedTasksHistory)
+		r.Get("/user/{userId}/completed", h.GetCompletedTasksByUser)
 		r.Get("/{id}", h.GetTask)
 		r.Post("/", h.CreateTask)
 		r.Put("/{id}", h.UpdateTask)
@@ -225,6 +226,45 @@ func (h *Handler) GetCompletedTasksHistory(w http.ResponseWriter, r *http.Reques
 	}
 
 	tasks, err := h.service.GetCompletedTasksHistory(r.Context(), limit)
+	if err != nil {
+		if errors.Is(err, ErrUserNotAuthenticated) {
+			respondWithError(w, http.StatusUnauthorized, err.Error())
+			return
+		}
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	respondWithJSON(w, http.StatusOK, tasks)
+}
+
+func (h *Handler) GetCompletedTasksByUser(w http.ResponseWriter, r *http.Request) {
+	userIDStr := chi.URLParam(r, "userId")
+	userID, err := strconv.ParseInt(userIDStr, 10, 64)
+	if err != nil {
+		respondWithError(w, http.StatusBadRequest, "Invalid user ID")
+		return
+	}
+
+	limitStr := r.URL.Query().Get("limit")
+	offsetStr := r.URL.Query().Get("offset")
+
+	limit := 20
+	offset := 0
+
+	if limitStr != "" {
+		if parsedLimit, err := strconv.Atoi(limitStr); err == nil && parsedLimit > 0 {
+			limit = parsedLimit
+		}
+	}
+
+	if offsetStr != "" {
+		if parsedOffset, err := strconv.Atoi(offsetStr); err == nil && parsedOffset >= 0 {
+			offset = parsedOffset
+		}
+	}
+
+	tasks, err := h.service.GetCompletedTasksByUser(r.Context(), userID, limit, offset)
 	if err != nil {
 		if errors.Is(err, ErrUserNotAuthenticated) {
 			respondWithError(w, http.StatusUnauthorized, err.Error())

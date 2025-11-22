@@ -13,6 +13,7 @@ import EditTaskModal from './EditTaskModal.vue';
 import LanguageSelectorModal from './LanguageSelectorModal.vue';
 import CreateComplimentModal from './CreateComplimentModal.vue';
 import UnviewedComplimentsModal from './UnviewedComplimentsModal.vue';
+import EditProfileModal from './EditProfileModal.vue';
 
 const { t, locale } = useI18n();
 const router = useRouter();
@@ -41,6 +42,7 @@ const isCompleteModalOpen = ref(false);
 const isEditModalOpen = ref(false);
 const isComplimentModalOpen = ref(false);
 const isUnviewedComplimentsModalOpen = ref(false);
+const isEditProfileModalOpen = ref(false);
 const selectedTaskForComplete = ref<Task | null>(null);
 const selectedTaskForEdit = ref<Task | null>(null);
 const hasMoreTasks = ref(true);
@@ -192,6 +194,9 @@ const handleComplimentCreated = () => {
   loadLastReceivedCompliment();
 };
 
+const handleProfileUpdated = () => {
+};
+
 const handleCompleteClick = (task: Task) => {
   selectedTaskForComplete.value = task;
   isCompleteModalOpen.value = true;
@@ -324,6 +329,15 @@ onUnmounted(() => {
                 <span>{{ t('settings.changeLanguage') }}</span>
               </button>
               <button
+                @click.stop="isEditProfileModalOpen = true; showSettingsMenu = false"
+                class="cursor-pointer flex w-full items-center gap-3 whitespace-nowrap rounded-md px-4 py-2 text-left text-slate-100 transition-colors duration-200 hover:bg-slate-700/50"
+              >
+                <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                <span>{{ t('settings.editProfile') }}</span>
+              </button>
+              <button
                 @click.stop="router.push({ name: 'ComplimentsHistory' }); showSettingsMenu = false"
                 class="cursor-pointer flex w-full items-center gap-3 whitespace-nowrap rounded-md px-4 py-2 text-left text-slate-100 transition-colors duration-200 hover:bg-slate-700/50"
               >
@@ -371,7 +385,8 @@ onUnmounted(() => {
           <div
             v-for="(user, index) in topUsers"
             :key="user.id"
-            class="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 p-4"
+            @click="router.push({ name: 'UserTasksHistory', params: { userId: user.id } })"
+            class="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 p-4 cursor-pointer transition-all duration-200 hover:border-blue-500/50 hover:bg-slate-800/70"
             :class="{ 'border-slate-600 bg-slate-800/30': index === 1, 'border-amber-600 bg-amber-600/10': index === 2 }"
           >
             <div class="text-2xl font-bold text-slate-100">{{ user.points }}</div>
@@ -669,6 +684,12 @@ onUnmounted(() => {
       :compliments="unviewedCompliments"
       @close="isUnviewedComplimentsModalOpen = false"
       @viewed="handleUnviewedComplimentsViewed"
+    />
+    
+    <EditProfileModal
+      :is-open="isEditProfileModalOpen"
+      @close="isEditProfileModalOpen = false"
+      @updated="handleProfileUpdated"
     />
   </div>
 </template>

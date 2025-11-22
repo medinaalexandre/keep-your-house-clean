@@ -254,6 +254,15 @@ func (s *Service) GetCompletedTasksHistory(ctx context.Context, limit int) ([]do
 	return s.repo.GetCompletedTasksHistory(ctx, tenantID, limit)
 }
 
+func (s *Service) GetCompletedTasksByUser(ctx context.Context, userID int64, limit int, offset int) ([]domain.TaskWithUser, error) {
+	tenantID := middleware.GetTenantIDFromContext(ctx)
+	if tenantID == 0 {
+		return nil, ErrUserNotAuthenticated
+	}
+
+	return s.repo.GetCompletedTasksByUser(ctx, userID, tenantID, limit, offset)
+}
+
 func (s *Service) UndoCompleteTask(ctx context.Context, id int64) (*domain.Task, error) {
 	userID := middleware.GetUserIDFromContext(ctx)
 	tenantID := middleware.GetTenantIDFromContext(ctx)

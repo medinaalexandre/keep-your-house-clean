@@ -101,3 +101,40 @@ export const createUser = async (req: CreateUserRequest): Promise<User> => {
   return response.json();
 };
 
+export interface UpdateUserRequest {
+  name?: string;
+  password?: string;
+}
+
+export const getUserById = async (id: number): Promise<User> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/users/${id}`, {
+    method: 'GET',
+    headers: getHeaders(),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(errorData.error || 'Failed to fetch user');
+  }
+
+  return response.json();
+};
+
+export const updateUser = async (id: number, req: UpdateUserRequest): Promise<User> => {
+  const response = await fetch(`${API_BASE_URL}/api/v1/users/${id}`, {
+    method: 'PUT',
+    headers: getHeaders(),
+    body: JSON.stringify({
+      name: req.name,
+      password: req.password,
+    }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+    throw new Error(errorData.error || 'Failed to update user');
+  }
+
+  return response.json();
+};
+

@@ -325,6 +325,61 @@ func (r *TaskRepository) GetCompletedTasksHistory(ctx context.Context, tenantID 
 	return tasks, nil
 }
 
+func (r *TaskRepository) GetCompletedTasksByUser(ctx context.Context, userID int64, tenantID int64, limit int, offset int) ([]domain.TaskWithUser, error) {
+	query := `
+		SELECT t.id, t.title, t.description, t.points, t.status, t.scheduled_to, t.scheduled_by_id,
+		       t.frequency_value, t.frequency_unit, t.completed, t.completed_by_id,
+		       t.tenant_id, t.created_at, t.created_by_id, t.updated_at, t.updated_by_id, t.deleted_at,
+		       u.name as completed_by_name
+		FROM tasks t
+		LEFT JOIN users u ON t.completed_by_id = u.id AND u.deleted_at IS NULL
+		WHERE t.deleted_at IS NULL AND t.tenant_id = $1 AND t.completed = true AND t.completed_by_id = $2
+		ORDER BY t.updated_at DESC
+		LIMIT $3 OFFSET $4
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, tenantID, userID, limit, offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var tasks []domain.TaskWithUser
+	for rows.Next() {
+		var task domain.TaskWithUser
+		err := rows.Scan(
+			&task.ID,
+			&task.Title,
+			&task.Description,
+			&task.Points,
+			&task.Status,
+			&task.ScheduledTo,
+			&task.ScheduledById,
+			&task.FrequencyValue,
+			&task.FrequencyUnit,
+			&task.Completed,
+			&task.CompletedById,
+			&task.TenantID,
+			&task.CreatedAt,
+			&task.CreatedById,
+			&task.UpdatedAt,
+			&task.UpdatedById,
+			&task.DeletedAt,
+			&task.CompletedByName,
+		)
+		if err != nil {
+			return nil, err
+		}
+		tasks = append(tasks, task)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return tasks, nil
+}
+
 func (r *TaskRepository) FindTaskCreatedAfterCompletion(ctx context.Context, originalTask *domain.Task, completionTime time.Time) (*domain.Task, error) {
 	query := `
 		SELECT id, title, description, points, status, scheduled_to, scheduled_by_id,
