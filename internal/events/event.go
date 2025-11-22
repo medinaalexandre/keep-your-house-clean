@@ -8,8 +8,9 @@ import (
 type EventType string
 
 const (
-	EventTypeTaskCompleted EventType = "task.completed"
-	EventTypeTaskUndone   EventType = "task.undone"
+	EventTypeTaskCompleted     EventType = "task.completed"
+	EventTypeTaskUndone        EventType = "task.undone"
+	EventTypeComplimentReceived EventType = "compliment.received"
 )
 
 type Event struct {
@@ -26,6 +27,11 @@ type TaskCompletedPayload struct {
 type TaskUndonePayload struct {
 	CompletedBy int64
 	Points      int
+}
+
+type ComplimentReceivedPayload struct {
+	ToUser int64
+	Points int
 }
 
 type EventHandler func(ctx context.Context, event Event) error

@@ -5,11 +5,14 @@ import { useRouter } from 'vue-router';
 import { getUpcomingTasks, getCompletedTasksHistory, undoCompleteTask, deleteTask, type Task, type TaskWithUser } from '../services/tasks';
 import { getTopUsers, type User } from '../services/users';
 import { logout } from '../services/auth';
+import { getLastReceivedCompliment, getUnviewedReceivedCompliments, type ComplimentWithUser } from '../services/compliments';
 import CreateTaskModal from './CreateTaskModal.vue';
 import CreateUserModal from './CreateUserModal.vue';
 import CompleteTaskModal from './CompleteTaskModal.vue';
 import EditTaskModal from './EditTaskModal.vue';
 import LanguageSelectorModal from './LanguageSelectorModal.vue';
+import CreateComplimentModal from './CreateComplimentModal.vue';
+import UnviewedComplimentsModal from './UnviewedComplimentsModal.vue';
 
 const { t, locale } = useI18n();
 const router = useRouter();
@@ -17,6 +20,8 @@ const router = useRouter();
 const upcomingTasks = ref<Task[]>([]);
 const completedTasks = ref<TaskWithUser[]>([]);
 const topUsers = ref<User[]>([]);
+const lastReceivedCompliment = ref<ComplimentWithUser | null>(null);
+const unviewedCompliments = ref<ComplimentWithUser[]>([]);
 
 const ensureArray = <T>(value: T[] | null | undefined): T[] => {
   return Array.isArray(value) ? value : [];
@@ -24,14 +29,18 @@ const ensureArray = <T>(value: T[] | null | undefined): T[] => {
 const loadingUpcoming = ref(false);
 const loadingHistory = ref(false);
 const loadingRanking = ref(false);
+const loadingCompliment = ref(false);
 const loadingMore = ref(false);
 const errorUpcoming = ref('');
 const errorHistory = ref('');
 const errorRanking = ref('');
+const errorCompliment = ref('');
 const isTaskModalOpen = ref(false);
 const isUserModalOpen = ref(false);
 const isCompleteModalOpen = ref(false);
 const isEditModalOpen = ref(false);
+const isComplimentModalOpen = ref(false);
+const isUnviewedComplimentsModalOpen = ref(false);
 const selectedTaskForComplete = ref<Task | null>(null);
 const selectedTaskForEdit = ref<Task | null>(null);
 const hasMoreTasks = ref(true);
@@ -145,6 +154,44 @@ const handleUserCreated = () => {
   loadTopUsers();
 };
 
+const loadLastReceivedCompliment = async () => {
+  loadingCompliment.value = true;
+  errorCompliment.value = '';
+  try {
+    const compliment = await getLastReceivedCompliment();
+    lastReceivedCompliment.value = compliment;
+  } catch (e: any) {
+    errorCompliment.value = e.message;
+    lastReceivedCompliment.value = null;
+  } finally {
+    loadingCompliment.value = false;
+  }
+};
+
+const loadUnviewedCompliments = async () => {
+  try {
+    const compliments = await getUnviewedReceivedCompliments();
+    unviewedCompliments.value = compliments || [];
+    if (unviewedCompliments.value.length > 0) {
+      isUnviewedComplimentsModalOpen.value = true;
+    }
+  } catch (e: any) {
+    console.error('Failed to load unviewed compliments:', e);
+    unviewedCompliments.value = [];
+  }
+};
+
+const handleUnviewedComplimentsViewed = () => {
+  unviewedCompliments.value = [];
+  loadLastReceivedCompliment();
+  loadTopUsers();
+};
+
+const handleComplimentCreated = () => {
+  loadTopUsers();
+  loadLastReceivedCompliment();
+};
+
 const handleCompleteClick = (task: Task) => {
   selectedTaskForComplete.value = task;
   isCompleteModalOpen.value = true;
@@ -221,6 +268,8 @@ onMounted(async () => {
   await loadUpcomingTasks(true);
   loadCompletedTasksHistory();
   loadTopUsers();
+  loadLastReceivedCompliment();
+  loadUnviewedCompliments();
   
   setTimeout(() => {
     if (upcomingTasksContainer.value) {
@@ -273,6 +322,15 @@ onUnmounted(() => {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
                 </svg>
                 <span>{{ t('settings.changeLanguage') }}</span>
+              </button>
+              <button
+                @click.stop="router.push({ name: 'ComplimentsHistory' }); showSettingsMenu = false"
+                class="cursor-pointer flex w-full items-center gap-3 whitespace-nowrap rounded-md px-4 py-2 text-left text-slate-100 transition-colors duration-200 hover:bg-slate-700/50"
+              >
+                <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span>{{ t('settings.complimentsHistory') }}</span>
               </button>
               <button
                 @click.stop="handleLogout(); showSettingsMenu = false"
@@ -431,8 +489,29 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <div class="rounded-lg bg-slate-900 p-6 shadow-xl ring-1 ring-slate-800/50">
-          <h2 class="mb-4 text-xl font-semibold text-slate-100">{{ t('dashboard.taskHistory') }}</h2>
+        <div class="flex flex-col gap-6">
+          <div v-if="lastReceivedCompliment" class="rounded-lg bg-gradient-to-r from-yellow-500/10 to-amber-500/10 p-4 shadow-xl ring-1 ring-yellow-500/30">
+            <div class="flex items-start gap-3">
+              <div class="flex-shrink-0">
+                <svg class="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div class="flex-1 min-w-0">
+                <h3 class="text-base font-semibold text-yellow-400 truncate">{{ lastReceivedCompliment.title }}</h3>
+                <p v-if="lastReceivedCompliment.description" class="mt-1 text-sm text-slate-300 line-clamp-2">{{ lastReceivedCompliment.description }}</p>
+                <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                  <span>{{ t('dashboard.complimentFrom') }} {{ lastReceivedCompliment.from_user_name || t('dashboard.unknownUser') }}</span>
+                  <span>•</span>
+                  <span>{{ formatDate(lastReceivedCompliment.created_at) }}</span>
+                  <span v-if="lastReceivedCompliment.points > 0" class="text-yellow-400 font-medium">+{{ lastReceivedCompliment.points }} {{ t('dashboard.points') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-lg bg-slate-900 p-6 shadow-xl ring-1 ring-slate-800/50">
+            <h2 class="mb-4 text-xl font-semibold text-slate-100">{{ t('dashboard.taskHistory') }}</h2>
           
           <div v-if="loadingHistory" class="text-center text-slate-400">
             Carregando...
@@ -486,11 +565,12 @@ onUnmounted(() => {
               </div>
             </li>
           </ul>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="fixed bottom-8 right-8 z-50 floating-menu-container">
+    <div class="fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 floating-menu-container">
       <div class="relative">
         <Transition
           enter-active-class="transition ease-out duration-200"
@@ -522,6 +602,15 @@ onUnmounted(() => {
               <span class="flex-1">{{ t('dashboard.createUser') }}</span>
               <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+            </button>
+            <button
+              @click="isComplimentModalOpen = true; showFloatingMenu = false"
+              class="cursor-pointer flex items-center justify-between gap-3 whitespace-nowrap rounded-md px-4 py-3 text-left text-slate-100 transition-colors duration-200 hover:bg-slate-700/50"
+            >
+              <span class="flex-1">{{ t('dashboard.createCompliment') }}</span>
+              <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </button>
           </div>
@@ -568,11 +657,37 @@ onUnmounted(() => {
       :is-open="isLanguageModalOpen"
       @close="isLanguageModalOpen = false"
     />
+    
+    <CreateComplimentModal
+      :is-open="isComplimentModalOpen"
+      @close="isComplimentModalOpen = false"
+      @created="handleComplimentCreated"
+    />
+    
+    <UnviewedComplimentsModal
+      :is-open="isUnviewedComplimentsModalOpen"
+      :compliments="unviewedCompliments"
+      @close="isUnviewedComplimentsModalOpen = false"
+      @viewed="handleUnviewedComplimentsViewed"
+    />
   </div>
 </template>
 
 <style scoped>
   .upcoming-tasks-scroll::-webkit-scrollbar {
     display: none;
+  }
+  
+  .floating-menu-container {
+    position: fixed !important;
+    bottom: 1rem;
+    right: 1rem;
+  }
+  
+  @media (min-width: 768px) {
+    .floating-menu-container {
+      bottom: 2rem;
+      right: 2rem;
+    }
   }
 </style>

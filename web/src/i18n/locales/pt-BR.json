@@ -19,12 +19,15 @@
     "createTask": "Criar Tarefa",
     "createFirstTask": "Crie a primeira tarefa aqui",
     "createUser": "Criar Usuário",
-    "points": "pontos"
+    "createCompliment": "Elogiar",
+    "points": "pontos",
+    "complimentFrom": "Elogio de"
   },
   "settings": {
     "title": "Configurações",
     "changeLanguage": "Trocar Linguagem",
     "selectLanguage": "Selecione seu idioma preferido",
+    "complimentsHistory": "Histórico de elogios",
     "logout": "Sair"
   },
   "task": {
@@ -110,6 +113,38 @@
     "emailPlaceholder": "seu[at]email.com",
     "passwordPlaceholder": "Mínimo 6 caracteres",
     "requiredFields": "Todos os campos são obrigatórios"
+  },
+  "compliment": {
+    "title": "Elogiar Usuário",
+    "titleLabel": "Título",
+    "descriptionLabel": "Descrição",
+    "pointsLabel": "Pontos",
+    "toUserLabel": "Elogiar",
+    "titlePlaceholder": "Ex: Excelente trabalho!",
+    "descriptionPlaceholder": "Descreva o elogio...",
+    "selectUser": "Selecione um usuário",
+    "loadingUsers": "Carregando usuários...",
+    "maxPoints": "máximo: 5",
+    "create": "Elogiar",
+    "creating": "Elogiando...",
+    "cancel": "Cancelar",
+    "titleRequired": "Título é obrigatório",
+    "userRequired": "Selecione um usuário para elogiar",
+    "invalidPoints": "Pontos devem estar entre 0 e 5"
+  },
+  "complimentsHistory": {
+    "title": "Histórico de Elogios",
+    "backToDashboard": "Voltar ao Dashboard",
+    "noCompliments": "Nenhum elogio encontrado",
+    "received": "Recebido",
+    "sent": "Enviado",
+    "from": "De",
+    "to": "Para"
+  },
+  "unviewedCompliments": {
+    "title": "Parabéns! Você recebeu {count} elogio(s)",
+    "from": "De",
+    "close": "Fechar"
   },
   "common": {
     "noDate": "Sem data"

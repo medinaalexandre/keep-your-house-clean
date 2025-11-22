@@ -14,6 +14,7 @@ import (
 	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"keep-your-house-clean/internal/auth"
+	complimentHandler "keep-your-house-clean/internal/compliment"
 	"keep-your-house-clean/internal/events"
 	eventHandlers "keep-your-house-clean/internal/events/handlers"
 	"keep-your-house-clean/internal/platform/database"
@@ -52,11 +53,16 @@ func main() {
 	userPointsHandler := eventHandlers.NewUserPointsHandler(userRepo)
 	dispatcher.RegisterHandler(events.EventTypeTaskCompleted, userPointsHandler.Handle)
 	dispatcher.RegisterHandler(events.EventTypeTaskUndone, userPointsHandler.Handle)
+	dispatcher.RegisterHandler(events.EventTypeComplimentReceived, userPointsHandler.Handle)
 	dispatcher.Start()
 
 	taskRepo := database.NewTaskRepository(db)
 	taskService := taskHandler.NewService(taskRepo, dispatcher)
 	taskHandlerInstance := taskHandler.NewHandler(taskService)
+
+	complimentRepo := database.NewComplimentRepository(db)
+	complimentService := complimentHandler.NewService(complimentRepo, userRepo, dispatcher)
+	complimentHandlerInstance := complimentHandler.NewHandler(complimentService)
 
 	jwtSecret := getEnv("JWT_SECRET", "your-secret-key")
 	authService := auth.NewService(userRepo, tenantRepo, jwtSecret)
@@ -85,17 +91,17 @@ func main() {
 		tenantHandlerInstance.RegisterRoutes(r)
 		userHandlerInstance.RegisterRoutes(r)
 		taskHandlerInstance.RegisterRoutes(r)
+		complimentHandlerInstance.RegisterRoutes(r)
 	})
 
-	fileServer := http.FileServer(http.Dir("./web/dist"))
-	r.Handle("/*", http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+	r.NotFound(func(w http.ResponseWriter, req *http.Request) {
 		path := req.URL.Path
-
 		if strings.HasPrefix(path, "/api") {
 			http.NotFound(w, req)
 			return
 		}
 
+		fileServer := http.FileServer(http.Dir("./web/dist"))
 		if path == "/" || !strings.Contains(filepath.Base(path), ".") {
 			http.ServeFile(w, req, "./web/dist/index.html")
 			return
@@ -109,7 +115,7 @@ func main() {
 
 		req.URL.Path = path
 		fileServer.ServeHTTP(w, req)
-	}))
+	})
 
 	port := getEnv("PORT", "8080")
 	log.Printf("Server starting on port %s", port)
