@@ -372,7 +372,7 @@ onUnmounted(() => {
             v-for="(user, index) in topUsers"
             :key="user.id"
             class="flex flex-col items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/50 p-4"
-            :class="{ 'border-yellow-500 bg-yellow-500/10': index === 0, 'border-slate-600 bg-slate-800/30': index === 1, 'border-amber-600 bg-amber-600/10': index === 2 }"
+            :class="{ 'border-slate-600 bg-slate-800/30': index === 1, 'border-amber-600 bg-amber-600/10': index === 2 }"
           >
             <div class="text-2xl font-bold text-slate-100">{{ user.points }}</div>
             <div class="text-sm font-medium text-slate-300">{{ user.name }}</div>
@@ -490,21 +490,21 @@ onUnmounted(() => {
         </div>
 
         <div class="flex flex-col gap-6">
-          <div v-if="lastReceivedCompliment" class="rounded-lg bg-gradient-to-r from-yellow-500/10 to-amber-500/10 p-4 shadow-xl ring-1 ring-yellow-500/30">
+          <div v-if="lastReceivedCompliment" class="rounded-lg bg-gradient-to-r from-purple-500/10 to-violet-500/10 p-4 shadow-xl ring-1 ring-purple-500/30">
             <div class="flex items-start gap-3">
               <div class="flex-shrink-0">
-                <svg class="h-6 w-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="h-6 w-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div class="flex-1 min-w-0">
-                <h3 class="text-base font-semibold text-yellow-400 truncate">{{ lastReceivedCompliment.title }}</h3>
+                <h3 class="text-base font-semibold text-purple-400 truncate">{{ lastReceivedCompliment.title }}</h3>
                 <p v-if="lastReceivedCompliment.description" class="mt-1 text-sm text-slate-300 line-clamp-2">{{ lastReceivedCompliment.description }}</p>
                 <div class="mt-2 flex flex-wrap items-center gap-2 text-xs text-slate-400">
                   <span>{{ t('dashboard.complimentFrom') }} {{ lastReceivedCompliment.from_user_name || t('dashboard.unknownUser') }}</span>
                   <span>•</span>
                   <span>{{ formatDate(lastReceivedCompliment.created_at) }}</span>
-                  <span v-if="lastReceivedCompliment.points > 0" class="text-yellow-400 font-medium">+{{ lastReceivedCompliment.points }} {{ t('dashboard.points') }}</span>
+                  <span v-if="lastReceivedCompliment.points > 0" class="text-purple-400 font-medium">+{{ lastReceivedCompliment.points }} {{ t('dashboard.points') }}</span>
                 </div>
               </div>
             </div>

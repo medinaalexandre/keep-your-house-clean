@@ -18,6 +18,7 @@ import (
 	"keep-your-house-clean/internal/events"
 	eventHandlers "keep-your-house-clean/internal/events/handlers"
 	"keep-your-house-clean/internal/platform/database"
+	"keep-your-house-clean/internal/platform/migrations"
 	authMiddleware "keep-your-house-clean/internal/platform/middleware"
 	taskHandler "keep-your-house-clean/internal/task"
 	tenantHandler "keep-your-house-clean/internal/tenant"
@@ -37,6 +38,12 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer db.Close()
+
+	migrator := migrations.NewMigrator(db, migrations.Files)
+	if err := migrator.Run(); err != nil {
+		log.Fatalf("Failed to run migrations: %v", err)
+	}
+	log.Println("Migrations executed successfully")
 
 	tenantRepo := database.NewTenantRepository(db)
 	tenantService := tenantHandler.NewService(tenantRepo)

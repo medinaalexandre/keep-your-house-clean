@@ -36,7 +36,7 @@ const handleClose = async () => {
   >
     <div class="w-full max-w-2xl rounded-lg bg-slate-900 p-6 shadow-xl ring-1 ring-slate-800/50">
       <div class="mb-4 flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-yellow-400">
+        <h2 class="text-2xl font-bold text-purple-400">
           {{ t('unviewedCompliments.title', { count: compliments.length }) }}
         </h2>
         <button
@@ -53,23 +53,23 @@ const handleClose = async () => {
         <div
           v-for="(compliment, index) in compliments"
           :key="compliment.id"
-          class="rounded-lg border border-yellow-500/50 bg-gradient-to-r from-yellow-500/10 to-amber-500/10 p-4"
+          class="rounded-lg border border-purple-500/50 bg-gradient-to-r from-purple-500/10 to-violet-500/10 p-4"
         >
           <div class="flex items-start gap-3">
             <div class="flex-shrink-0">
-              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500/20 text-yellow-400 font-semibold">
+              <div class="flex h-8 w-8 items-center justify-center rounded-full bg-purple-500/20 text-purple-400 font-semibold">
                 {{ index + 1 }}
               </div>
             </div>
             <div class="flex-1 min-w-0">
-              <h3 class="text-lg font-semibold text-yellow-400">{{ compliment.title }}</h3>
+              <h3 class="text-lg font-semibold text-purple-400">{{ compliment.title }}</h3>
               <p v-if="compliment.description" class="mt-1 text-sm text-slate-300">{{ compliment.description }}</p>
               <div class="mt-2 flex items-center gap-3 text-xs text-slate-400">
                 <span>
                   {{ t('unviewedCompliments.from') }}
                   <span class="font-medium text-slate-300">{{ compliment.from_user_name || t('dashboard.unknownUser') }}</span>
                 </span>
-                <span v-if="compliment.points > 0" class="text-yellow-400 font-medium">
+                <span v-if="compliment.points > 0" class="text-purple-400 font-medium">
                   +{{ compliment.points }} {{ t('dashboard.points') }}
                 </span>
               </div>
@@ -81,7 +81,7 @@ const handleClose = async () => {
       <div class="mt-6 flex justify-end">
         <button
           @click="handleClose"
-          class="rounded-md bg-yellow-600 px-6 py-2 text-white transition-colors duration-200 hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-slate-900"
+          class="rounded-md bg-purple-600 px-6 py-2 text-white transition-colors duration-200 hover:bg-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-slate-900"
         >
           {{ t('unviewedCompliments.close') }}
         </button>

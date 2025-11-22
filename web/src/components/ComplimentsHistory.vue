@@ -96,14 +96,14 @@ onMounted(() => {
             :key="compliment.id"
             class="rounded-lg border p-4 transition-all duration-200"
             :class="isReceived(compliment) 
-              ? 'border-yellow-500/50 bg-gradient-to-r from-yellow-500/10 to-amber-500/10' 
+              ? 'border-purple-500/50 bg-gradient-to-r from-purple-500/10 to-violet-500/10' 
               : 'border-blue-500/50 bg-gradient-to-r from-blue-500/10 to-cyan-500/10'"
           >
             <div class="flex items-start gap-4">
               <div class="flex-shrink-0">
                 <svg 
                   class="h-6 w-6" 
-                  :class="isReceived(compliment) ? 'text-yellow-500' : 'text-blue-500'"
+                  :class="isReceived(compliment) ? 'text-purple-500' : 'text-blue-500'"
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
@@ -118,7 +118,7 @@ onMounted(() => {
                       <span 
                         class="text-xs font-semibold px-2 py-1 rounded"
                         :class="isReceived(compliment) 
-                          ? 'bg-yellow-500/20 text-yellow-400' 
+                          ? 'bg-purple-500/20 text-purple-400' 
                           : 'bg-blue-500/20 text-blue-400'"
                       >
                         {{ isReceived(compliment) ? t('complimentsHistory.received') : t('complimentsHistory.sent') }}
@@ -135,7 +135,7 @@ onMounted(() => {
                       <span>{{ formatDate(compliment.created_at) }}</span>
                       <span v-if="compliment.points > 0" 
                         class="font-medium"
-                        :class="isReceived(compliment) ? 'text-yellow-400' : 'text-blue-400'"
+                        :class="isReceived(compliment) ? 'text-purple-400' : 'text-blue-400'"
                       >
                         {{ isReceived(compliment) ? '+' : '' }}{{ compliment.points }} {{ t('dashboard.points') }}
                       </span>
